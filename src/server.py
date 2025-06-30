@@ -1,3 +1,8 @@
+#Gianni Dumitru
+#csc 138 summer 25 
+#final project 
+#-------------------
+
 import sys
 import socket
 import threading
