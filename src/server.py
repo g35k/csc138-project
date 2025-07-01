@@ -14,9 +14,9 @@ def join(cli_sock, addr, name):
 		for user, sock, ad, in clients:
 			if user == name:
 				if sock is cli_sock:
-					cli_sock.send((f"{name} alreday joined\n").encode())
+					cli_sock.send((f"{name} already joined\n").encode())
 				else:
-					cli_sock.send((f"{name} alreday taken by another user\n").encode())
+					cli_sock.send((f"{name} already taken by another user\n").encode())
 				return None
 		if len(clients) >= 10:
 			cli_sock.send((f"Too many users, closing socket\n").encode())
@@ -32,7 +32,7 @@ def join(cli_sock, addr, name):
 
 def list(cli_sock, addr, user):
 	if not user:
-		cli_sock.send(("unregistered user type: JOIN <username>\n").encode())
+		cli_sock.send(("unregistered user, type: JOIN <username>\n").encode())
 		return
 	with threading.Lock():
 		user_list = ",".join([u for u, _, _ in clients])
@@ -40,7 +40,7 @@ def list(cli_sock, addr, user):
 
 def mesg(cli_sock, addr, user, target, msg):
 	if not user:
-		cli_sock.send(("unregistered user typr: JOIN <username>\n").encode())
+		cli_sock.send(("unregistered user, type: JOIN <username>\n").encode())
 		return
 	target_sock = None
 	with threading.Lock():

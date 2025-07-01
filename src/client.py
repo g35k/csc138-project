@@ -5,6 +5,20 @@
 
 import socket  #for TCP/IP connection
 import sys     #for command-line args and exit()
+import threading #for multi-threading 
+
+#constantly receives server messages on a separate thread
+def receive_messages(sock):
+    while True:
+        try:
+            data = sock.recv(4096).decode() #receive from server
+            if data:
+                print(data.strip()) #show incoming msg right away 
+            else:
+                break #server disconnected 
+        except:
+            break #error occurred or socket closed 
+
 
 def main():
     if len(sys.argv) != 3:  #check for hostname and port args 
@@ -30,22 +44,10 @@ def main():
                 break
             else:
                 print("Invalid input. Example: JOIN Mike")  #wrong format :( 
-
-        #receive server response
-        try:
-            sock.settimeout(1.0)  #short timeout to receive multiple join messages
-            while True:
-                try:
-                    response = sock.recv(4096).decode()
-                    if response:
-                        print(response.strip())  #print server message
-                    else:
-                        break
-                except socket.timeout:
-                    break
-            sock.settimeout(None)  #reset timeout
-        except Exception as e:
-            print(f"Error receiving JOIN responses: {e}")
+        
+        #start new thread to receive server msgs in real time 
+        receive_thread = threading.Thread(target=receive_messages, args=(sock,), daemon=True)
+        receive_thread.start()
 
         #main loop to send and receive messages
         while True:
@@ -57,10 +59,6 @@ def main():
 
                 if msg.strip().upper() == "QUIT":  #quit command
                     break
-
-                response = sock.recv(4096).decode()
-                if response:
-                    print(response.strip())  #show response
 
             except KeyboardInterrupt:  #ctrl+c to exit 
                 print("\nDisconnecting from server.")
