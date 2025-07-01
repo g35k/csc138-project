@@ -1,6 +1,7 @@
 #kayla garibay 
 #csc 138 summer 25 
 #final project 
+#tcp client and server chat app 
 #-------------------
 
 import socket  #for TCP/IP connection

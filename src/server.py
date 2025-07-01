@@ -14,12 +14,12 @@ def join(cli_sock, addr, name):
 			if user == name:
 				#if the client already joined with that user tell the client
 				if sock is cli_sock:
-					print(f"{name} atempted to join again")
-					cli_sock.send((f"{name} alreday joined\n").encode())
+					print(f"{name} attempted to join again")
+					cli_sock.send((f"{name} already joined\n").encode())
 				#if another client joined with that name tell them that its already taken
 				else:
 					print(f"{name} taken by another client")
-					cli_sock.send((f"{name} alreday taken by another user\n").encode())
+					cli_sock.send((f"{name} already taken by another user\n").encode())
 				return name
 		#if the length of the client list is or exceeds 10 notify the client and close the socket
 		if len(clients) >= 10:
@@ -42,7 +42,7 @@ def join(cli_sock, addr, name):
 def list(cli_sock, addr, user):
 	#checks if client has joined
 	if not user:
-		cli_sock.send(("unregistered user type: JOIN <username>\n").encode())
+		cli_sock.send(("unregistered user, type: JOIN <username>\n").encode())
 		return
 	print(f"LIST request from {user}")
 	#Locks thread to ensure nothing is changed while it loops through the client list
@@ -56,7 +56,7 @@ def list(cli_sock, addr, user):
 def mesg(cli_sock, addr, user, target, msg):
 	#checks if user has joined exits if they are not and lets them know
 	if not user:
-		cli_sock.send(("unregistered user typr: JOIN <username>\n").encode())
+		cli_sock.send(("unregistered user, type: JOIN <username>\n").encode())
 		return
 	print(f"MESG request from {user} to {target}: {msg}")
 	#intialized variable to store target users socket
@@ -95,7 +95,7 @@ def bcst(cli_sock, addr, user, msg):
 
 #quit server
 def quit(cli_sock, addr, user):
-	print(f"{user} is quiting the server")
+	print(f"{user} is quitting the server")
 	#locks thread while it checks if user has a valid value
 	with clientLock:
 		if user:
@@ -155,7 +155,7 @@ def threaded(cli_sock, addr):
 		print(f"error in thread: {e}")
 	#enter once exiting try
 	finally:
-		print(f"{user} left unexpectidly")
+		print(f"{user} left unexpectedly")
 		#only if user is present
 		if user:
 			#lock thread and loop through the list to find the index of the client that unexpectidly terminated removing thier tuple 
